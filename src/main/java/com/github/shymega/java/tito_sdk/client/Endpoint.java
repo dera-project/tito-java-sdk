@@ -6,20 +6,20 @@ import lombok.Getter;
 public enum Endpoint {
     ADMIN_3_0("https://api.tito.io/v3/") {
         @Override
-        public Client getClient(final String apiToken) {
+        public TitoAdmin30Client getClient(final String apiToken) {
             return new TitoAdmin30Client(this, apiToken);
         }
     },
     ADMIN_3_1("https://api.tito.io/v3/") {
         @Override
-        public Client getClient(final String apiToken) {
+        public TitoAdmin31Client getClient(final String apiToken) {
             return new TitoAdmin31Client(this, apiToken);
         }
     },
 
     CHECK_IN("https://checkin.tito.io/") {
         @Override
-        public Client getClient(final String apiToken) {
+        public TitoCheckInClient getClient(final String apiToken) {
             return new TitoCheckInClient(this, apiToken);
         }
     };
@@ -31,8 +31,8 @@ public enum Endpoint {
     }
 
     public String toString() {
-        return this.getValue();
+        return getValue();
     }
 
-    public abstract Client getClient(String apiToken);
+    public abstract <T extends Client> T getClient(String apiToken);
 }

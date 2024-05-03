@@ -16,22 +16,23 @@ public abstract class Client {
     // API token for Tito API
     protected static String API_TOKEN = null;
     // ObjectMapper for JSON serialization/deserialization
-    protected final ObjectMapper OBJ_MAPPER = new ObjectMapper();
+    protected static final ObjectMapper OBJ_MAPPER = new ObjectMapper();
     // HttpClient for making HTTP requests
-    protected final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
+    protected final HttpClient httpClient = HttpClient.newHttpClient();
     // Base URL for Tito API, can be changed if needed
-    protected URI HTTP_BASE_URL = null;
-    // Default HttpRequest with common headers
-    protected HttpRequest.Builder HTTP_REQUEST = HttpRequest.newBuilder()
-            .header("Content-Type", "application/json")
-            .header("Accept", "application/json")
-            .header("User-Agent", "Tito Java SDk");
-
+    protected URI titoBaseUrl = null;
 
     protected Client(final Endpoint endpoint, final String apiToken) {
         API_TOKEN = apiToken;
-        this.HTTP_BASE_URL = URI.create(endpoint.getValue());
-        this.HTTP_REQUEST = HTTP_REQUEST.header("Authorization", "Token token=" + API_TOKEN);
+        titoBaseUrl = URI.create(endpoint.getValue());
+    }
+
+    protected HttpRequest.Builder newHttpRequestBuilder(final URI uri, final String apiToken) {
+        return HttpRequest.newBuilder()
+		        .header("Accept", "application/json")
+		        .header("User-Agent", "Ti.to Java SDK")
+		        .header("Authorization", "Token token=" + apiToken)
+                .uri(titoBaseUrl.resolve(uri));
     }
 
     protected URL addToUrl(final URL baseUrl, final String extraPath) throws MalformedURLException, URISyntaxException {
@@ -48,13 +49,13 @@ public abstract class Client {
     }
 
     protected <T extends TitoApiBaseModel> T newRequestToPojo(final HttpRequest request, final Class<T> clazz) throws IOException, InterruptedException {
-        HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         T pojo = deserialize(response.body(), clazz);
         assert pojo != null;
 
         pojo.httpStatusCode = response.statusCode();
 
-        return deserialize(response.body(), clazz);
+        return pojo;
     }
 
     /**

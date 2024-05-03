@@ -22,6 +22,6 @@ public enum LookupMode {
 
     @JsonValue
     public String getLookupMode() {
-        return this.lookupMode.toUpperCase();
+        return lookupMode.toUpperCase();
     }
 }
