@@ -4,6 +4,7 @@
   packages = [ pkgs.git ];
   languages.nix.enable = true;
   languages.java.enable = true;
+  languages.java.jdk.package = pkgs.jdk21;
   devcontainer.enable = true;
   difftastic.enable = true;
 
