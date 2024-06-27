@@ -27,11 +27,11 @@ public abstract class Client {
         titoBaseUrl = URI.create(endpoint.getValue());
     }
 
-    protected HttpRequest.Builder newHttpRequestBuilder(final URI uri, final String apiToken) {
+    protected HttpRequest.Builder newHttpRequestBuilder(final URI uri) {
         return HttpRequest.newBuilder()
 		        .header("Accept", "application/json")
 		        .header("User-Agent", "Ti.to Java SDK")
-		        .header("Authorization", "Token token=" + apiToken)
+		        .header("Authorization", "Token token=" + API_TOKEN)
                 .uri(titoBaseUrl.resolve(uri));
     }
 
