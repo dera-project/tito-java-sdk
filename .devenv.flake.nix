@@ -1,7 +1,7 @@
 {
   inputs =
     let
-      version = "1.0.5";
+      version = "1.0.7";
       system = "x86_64-linux";
       devenv_root = "/home/dzr/projects/git.shymega.org.uk/verma-project/tito-java-sdk";
       devenv_dotfile = ./.devenv;
@@ -9,6 +9,7 @@
       container_name = null;
       devenv_tmpdir = "/run/user/1000";
       devenv_runtime = "/run/user/1000/devenv-b045d35";
+      devenv_istesting = false;
 
     in
     {
@@ -22,7 +23,7 @@
 
   outputs = { nixpkgs, ... }@inputs:
     let
-      version = "1.0.5";
+      version = "1.0.7";
       system = "x86_64-linux";
       devenv_root = "/home/dzr/projects/git.shymega.org.uk/verma-project/tito-java-sdk";
       devenv_dotfile = ./.devenv;
@@ -30,6 +31,7 @@
       container_name = null;
       devenv_tmpdir = "/run/user/1000";
       devenv_runtime = "/run/user/1000/devenv-b045d35";
+      devenv_istesting = false;
 
       devenv =
         if builtins.pathExists (devenv_dotfile + "/devenv.json")
@@ -87,6 +89,9 @@
           (pkgs.lib.optionalAttrs (inputs.devenv.isTmpDir or false) {
             devenv.tmpdir = devenv_tmpdir;
             devenv.runtime = devenv_runtime;
+          })
+          (pkgs.lib.optionalAttrs (inputs.devenv.hasIsTesting or false) {
+            devenv.isTesting = devenv_istesting;
           })
           (pkgs.lib.optionalAttrs (container_name != null) {
             container.isBuilding = pkgs.lib.mkForce true;
